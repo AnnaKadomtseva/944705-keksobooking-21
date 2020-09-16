@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анна Кадомцева](https://up.htmlacademy.ru/javascript/21/user/944705).
-* Наставник: `Неизвестно`.
+* Наставник: Илья Соколов.
 
 ---
 
