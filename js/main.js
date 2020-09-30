@@ -6,7 +6,8 @@ const OFFER_ADRESS = ['600, 350', '660, 450', '730, 250', '560, 380', '840, 400'
 const OFFER_PRICES_MIN = 0;
 const OFFER_PRICES_MAX = 10000;
 const OFFER_TYPES = ['palace', 'flat', 'house', 'bungalow'];
-const OFFER_ROOMS = [1, 2, 3, 4];
+const OFFER_ROOMS_MIN = 1;
+const OFFER_ROOMS_MAX = 4;
 const OFFER_GUESTS_MIN = 1;
 const OFFER_GUESTS_MAX = 4;
 const OFFER_CHECKING = ['12:00', '13:00', '14:00'];
@@ -29,8 +30,6 @@ const getRandomItemFromArray = function (array) {
 };
 
 const getRandomIntInclusive = function (min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
@@ -44,7 +43,7 @@ const makeObject = function () {
       address: getRandomItemFromArray(OFFER_ADRESS),
       price: getRandomIntInclusive(OFFER_PRICES_MIN, OFFER_PRICES_MAX),
       type: getRandomItemFromArray(OFFER_TYPES),
-      rooms: getRandomItemFromArray(OFFER_ROOMS),
+      rooms: getRandomIntInclusive(OFFER_ROOMS_MIN, OFFER_ROOMS_MAX),
       guests: getRandomIntInclusive(OFFER_GUESTS_MIN, OFFER_GUESTS_MAX),
       checkin: getRandomItemFromArray(OFFER_CHECKING),
       checkout: getRandomItemFromArray(OFFER_CHECKOUT),
