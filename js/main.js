@@ -71,22 +71,23 @@ const map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
 const pin = document.querySelector('#pin');
-const mapPin = pin.content.querySelector('map__pin');
+const mapPin = pin.content.querySelector('.map__pin');
 const mapPins = map.querySelector('.map__pins');
 
 const makeElement = function (advert) {
-  const pinElement = mapPin.cloneNode(true);
-  pinElement.querySelector('.map__pin--main').style = `left: ${advert.location.x + GAP_X}px; top: ${advert.location.y + GAP_Y}px;`;
-  const mapPinImg = pinElement.querySelector('.map__pin--main img');
+  let pinElement = mapPin.cloneNode(true);
+  pinElement.style.left = advert.location.x + GAP_X + 'px';
+  pinElement.style.top = advert.location.y + GAP_Y + 'px';
+  const mapPinImg = pinElement.querySelector('img');
   mapPinImg.src = advert.author.avatar;
   mapPinImg.alt = advert.offer.title;
   return pinElement;
 };
 
-const renderPins = function (pins) {
+const renderPins = function (adverts) {
   const fragment = document.createDocumentFragment();
-  for (let i = 0; i < pins.length; i++) {
-    const resultPinElement = makeElement(pin[i]);
+  for (let i = 0; i < adverts.length; i++) {
+    const resultPinElement = makeElement(adverts[i]);
     fragment.appendChild(resultPinElement);
   }
   return fragment;
