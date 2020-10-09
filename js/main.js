@@ -16,12 +16,12 @@ const OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', '
 const OFFER_DESCRIPTION = ['Отличное бунгало', 'Бунгало на любителя', 'Уютная квартира', 'Квартира на все времена', 'Дворец класса люкс', 'Дворец миллиардера'];
 const OFFER_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 const LOCATION_X_MIN = 0;
-const LOCATION_X_MAX = 1000;
+const LOCATION_X_MAX = 1200;
 const LOCATION_Y_MIN = 130;
 const LOCATION_Y_MAX = 630;
 const AD_COUNT = 8;
-const GAP_X = 10;
-const GAP_Y = 15;
+const MAP_PIN_WIDTH = 50;
+const MAP_PIN_HEIGHT = 70;
 
 const getRandomItemFromArray = function (array) {
   const randomNumber = Math.floor(Math.random() * array.length);
@@ -31,6 +31,19 @@ const getRandomItemFromArray = function (array) {
 
 const getRandomIntInclusive = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+const shuffleArray = function (a) {
+  let j;
+  let x;
+  let i;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
+  }
+  return a;
 };
 
 const makeObject = function () {
@@ -47,7 +60,7 @@ const makeObject = function () {
       guests: getRandomIntInclusive(OFFER_GUESTS_MIN, OFFER_GUESTS_MAX),
       checkin: getRandomItemFromArray(OFFER_CHECKING),
       checkout: getRandomItemFromArray(OFFER_CHECKOUT),
-      features: getRandomItemFromArray(OFFER_FEATURES),
+      features: shuffleArray(OFFER_FEATURES).slice(0, getRandomIntInclusive(OFFER_FEATURES.length)),
       description: getRandomItemFromArray(OFFER_DESCRIPTION),
       photos: getRandomItemFromArray(OFFER_PHOTOS)
     },
@@ -76,8 +89,8 @@ const mapPins = map.querySelector('.map__pins');
 
 const makeElement = function (advert) {
   let pinElement = mapPin.cloneNode(true);
-  pinElement.style.left = advert.location.x + GAP_X + 'px';
-  pinElement.style.top = advert.location.y + GAP_Y + 'px';
+  pinElement.style.left = advert.location.x - MAP_PIN_WIDTH / 2 + 'px';
+  pinElement.style.top = advert.location.y - MAP_PIN_HEIGHT + 'px';
   const mapPinImg = pinElement.querySelector('img');
   mapPinImg.src = advert.author.avatar;
   mapPinImg.alt = advert.offer.title;
@@ -95,3 +108,138 @@ const renderPins = function (adverts) {
 
 const pins = generateArray(AD_COUNT);
 mapPins.append(renderPins(pins));
+
+map.classList.add('map--faded');
+
+const adFormField = document.querySelector('#avatar');
+adFormField.setAttribute('disabled', 'disabled');
+
+const adFormElement = document.querySelectorAll('.ad-form__element');
+for (let i = 0; i < adFormElement.length; i++) {
+  adFormElement[i].setAttribute('disabled', 'disabled');
+}
+
+const mapPinMain = document.querySelector('.map__pin--main');
+const form = document.querySelector('.ad-form');
+let address = form.querySelector('#address');
+
+const cancelChangeElements = function () {
+  map.classList.remove('map--faded');
+  adFormField.removeAttribute('disabled');
+  for (let i = 0; i < adFormElement.length; i++) {
+    adFormElement[i].removeAttribute('disabled');
+  }
+};
+
+const getCoords = function () {
+  let box = mapPinMain.getBoundingClientRect();
+  return {
+    top: box.top + window.pageYOffset + box.height / 2,
+    left: box.left + window.pageXOffset + box.width / 2
+  };
+};
+
+let setCoords = function () {
+  let coords = getCoords(mapPinMain);
+  address.value = coords.left + ', ' + coords.top;
+};
+
+setCoords();
+
+const onMainPinMouseDown = function (evt) {
+  if (evt.button === 0) {
+    evt.preventDefault();
+    cancelChangeElements();
+    setCoords();
+  }
+  let startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  const onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+    let shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+    mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+    mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+  };
+  const onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+};
+
+mapPinMain.addEventListener('mousedown', onMainPinMouseDown);
+
+const onMainPinEnterPress = function (evt) {
+  if (evt.key === 'Enter') {
+    cancelChangeElements();
+  }
+};
+
+mapPinMain.addEventListener('keydown', onMainPinEnterPress);
+
+const title = document.querySelector('#title');
+const titleMinLength = 30;
+const titleMaxLength = 100;
+
+title.addEventListener('input', function () {
+  const valueLength = title.value.length;
+  if (valueLength < titleMinLength) {
+    title.setCustomValidity('Ещё ' + (titleMinLength - valueLength) + ' симв.');
+  } else if (valueLength > titleMaxLength) {
+    title.setCustomValidity('Удалите лишние ' + (valueLength - titleMaxLength) + ' симв.');
+  } else {
+    title.setCustomValidity('');
+  }
+
+  title.reportValidity();
+});
+
+title.addEventListener('invalid', function () {
+  if (title.validity.tooShort) {
+    title.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
+  } else if (title.validity.tooLong) {
+    title.setCustomValidity('Заголовок не должен превышать 100 симолов');
+  } else if (title.validity.valueMissing) {
+    title.setCustomValidity('Обязательное поле');
+  } else {
+    title.setCustomValidity('');
+  }
+});
+
+const guestsNumber = document.querySelector('#capacity');
+const roomsNumber = document.querySelector('#room_number');
+const capacityOptions = guestsNumber.querySelectorAll('option');
+
+const numberOfGuests = {
+  1: ['1'],
+  2: ['1', '2'],
+  3: ['1', '2', '3'],
+  100: ['0']
+};
+
+const validateRooms = function () {
+  const roomValue = roomsNumber.value;
+  capacityOptions.forEach(function (option) {
+    option.selected = numberOfGuests[roomValue][0] === option.value;
+    let isShow = !(numberOfGuests[roomValue].indexOf(option.value) >= 0);
+    option.disabled = isShow;
+    option.hidden = isShow;
+  });
+};
+
+validateRooms();
+
+roomsNumber.addEventListener('change', function () {
+  validateRooms();
+});
