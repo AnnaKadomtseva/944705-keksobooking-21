@@ -10,17 +10,7 @@
   };
   const TIMEOUT_IN_MS = 10000;
 
-  const upload = function (data, onSuccess) {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-    xhr.addEventListener('load', function () {
-      onSuccess(xhr.response);
-    });
-    xhr.open('POST', Url.UPLOAD);
-    xhr.send(data);
-  };
-
-  const load = function (onSuccess, onError) {
+  const createXhr = function (method, url, onSuccess, onError) {
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -38,8 +28,16 @@
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
     xhr.timeout = TIMEOUT_IN_MS;
-    xhr.open('GET', Url.LOAD);
-    xhr.send();
+    xhr.open(method, url);
+    return xhr;
+  };
+
+  const upload = function (data, onSuccess, onError) {
+    createXhr('POST', Url.UPLOAD, onSuccess, onError).send(data);
+  };
+
+  const load = function (onSuccess, onError) {
+    createXhr('GET', Url.LOAD, onSuccess, onError).send();
   };
 
   window.backend = {
