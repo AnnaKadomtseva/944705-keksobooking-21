@@ -75,6 +75,13 @@
     validateRooms();
   });
 
+  form.addEventListener('submit', function (evt) {
+    window.backend.upload(new FormData(form), function () {
+      setDisableState();
+    });
+    evt.preventDefault();
+  });
+
   window.form = {
     form: form,
     setDisableState: setDisableState,
