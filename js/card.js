@@ -50,70 +50,70 @@
     if (advert.offer.avatar) {
       cardAvatar.src = advert.author.avatar;
     } else {
-      renderedCard.removeChild(cardAvatar);
+      cardAvatar.remove();
     }
 
     const cardTitle = renderedCard.querySelector('.popup__title');
     if (advert.offer.title) {
       cardTitle.textContent = advert.offer.title;
     } else {
-      renderedCard.removeChild(cardTitle);
+      cardTitle.remove();
     }
 
     const cardAddress = renderedCard.querySelector('.popup__text--address');
     if (advert.offer.address) {
       cardAddress.textContent = advert.offer.address;
     } else {
-      renderedCard.removeChild(cardAddress);
+      cardAddress.remove();
     }
 
     const cardPrice = renderedCard.querySelector('.popup__text--price');
     if (advert.offer.price) {
       cardPrice.textContent = advert.offer.price + '₽/ночь';
     } else {
-      renderedCard.removeChild(cardPrice);
+      cardPrice.remove();
     }
 
     const cardType = renderedCard.querySelector('.popup__type');
     if (advert.offer.type) {
       cardType.textContent = TypesHousing[advert.offer.type];
     } else {
-      renderedCard.removeChild(cardType);
+      cardType.remove();
     }
 
     const cardCapacity = renderedCard.querySelector('.popup__text--capacity');
     if (advert.offer.rooms && advert.offer.guests) {
       cardCapacity.textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
     } else {
-      renderedCard.removeChild(cardCapacity);
+      cardCapacity.remove();
     }
 
     const cardTime = renderedCard.querySelector('.popup__text--time');
     if (advert.offer.checkin && advert.offer.checkout) {
       cardTime.textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
     } else {
-      renderedCard.removeChild(cardTime);
+      cardTime.remove();
     }
 
     const cardFeatures = renderedCard.querySelector('.popup__features');
     if (advert.offer.features.length) {
       renderAdFeatures(advert, cardFeatures);
     } else {
-      renderedCard.removeChild(cardFeatures);
+      cardFeatures.remove();
     }
 
     const cardDescription = renderedCard.querySelector('.popup__description');
     if (advert.offer.description) {
       cardDescription.textContent = advert.offer.description;
     } else {
-      renderedCard.removeChild(cardDescription);
+      cardDescription.remove();
     }
 
     const cardPhotos = renderedCard.querySelector('.popup__photos');
     if (advert.offer.photos.length) {
       renderAdPhotos(advert, cardPhotos);
     } else {
-      renderedCard.removeChild(cardPhotos);
+      cardPhotos.remove();
     }
 
     mapFiltersContainer.insertAdjacentElement('beforebegin', renderedCard);
