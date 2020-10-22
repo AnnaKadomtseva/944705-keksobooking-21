@@ -12,12 +12,11 @@
     HEIGHT: 70
   };
 
-  const map = document.querySelector('.map');
-  map.classList.remove('map--faded');
+  window.card.mapElement.classList.remove('map--faded');
 
   const pin = document.querySelector('#pin');
   const mapPin = pin.content.querySelector('.map__pin');
-  const mapPins = map.querySelector('.map__pins');
+  const mapPins = window.card.mapElement.querySelector('.map__pins');
 
   const makeElement = function (advert) {
     let pinElement = mapPin.cloneNode(true);
@@ -26,6 +25,9 @@
     const mapPinImg = pinElement.querySelector('img');
     mapPinImg.src = advert.author.avatar;
     mapPinImg.alt = advert.offer.title;
+    pinElement.addEventListener('click', function () {
+      window.card.show(advert);
+    });
     return pinElement;
   };
 
@@ -50,7 +52,7 @@
     document.main.insertAdjacentElement('afterbegin', error);
   };
 
-  map.classList.add('map--faded');
+  window.card.mapElement.classList.add('map--faded');
   const mapPinMain = document.querySelector('.map__pin--main');
 
   let mainPinLeft = getComputedStyle(mapPinMain).left;
@@ -65,7 +67,7 @@
   window.form.setAddress(addressDefaultCoords.left, addressDefaultCoords.top);
 
   const activateFields = function () {
-    map.classList.remove('map--faded');
+    window.card.mapElement.classList.remove('map--faded');
     window.form.form.classList.remove('ad-form--disabled');
     window.form.setDisableState();
     window.form.setAddress(addressDefaultCoords.left, addressDefaultCoords.offsetY);
@@ -118,4 +120,10 @@
   };
 
   mapPinMain.addEventListener('keydown', onMainPinEnterPress);
+
+  window.map = {
+    renderPins: renderPins
+  };
 })();
+
+
