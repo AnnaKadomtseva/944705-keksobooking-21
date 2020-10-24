@@ -1,44 +1,15 @@
 'use strict';
 
 (function () {
-  const AD_COUNT = 8;
   const MainPinSize = {
     WIDTH: 62,
     HEIGHT: 62,
     ARROW: 22
   };
-  const MapPin = {
-    WIDTH: 50,
-    HEIGHT: 70
-  };
 
-  window.card.mapElement.classList.remove('map--faded');
-
-  const pin = document.querySelector('#pin');
-  const mapPin = pin.content.querySelector('.map__pin');
-  const mapPins = window.card.mapElement.querySelector('.map__pins');
-
-  const makeElement = function (advert) {
-    let pinElement = mapPin.cloneNode(true);
-    pinElement.style.left = advert.location.x - MapPin.WIDTH / 2 + 'px';
-    pinElement.style.top = advert.location.y - MapPin.HEIGHT + 'px';
-    const mapPinImg = pinElement.querySelector('img');
-    mapPinImg.src = advert.author.avatar;
-    mapPinImg.alt = advert.offer.title;
-    pinElement.addEventListener('click', function () {
-      window.card.show(advert);
-    });
-    return pinElement;
-  };
-
-  const renderPins = function (adverts) {
-    const fragment = document.createDocumentFragment();
-    for (let i = 0; i < AD_COUNT; i++) {
-      const resultPinElement = makeElement(adverts[i]);
-      fragment.appendChild(resultPinElement);
-    }
-    mapPins.appendChild(fragment);
-  };
+  const mapPinMain = document.querySelector('.map__pin--main');
+  let mainPinLeft = getComputedStyle(mapPinMain).left;
+  let mainPinTop = getComputedStyle(mapPinMain).top;
 
   const errorHandler = function (errorMessage) {
     const error = document.querySelector('#error');
@@ -53,10 +24,6 @@
   };
 
   window.card.mapElement.classList.add('map--faded');
-  const mapPinMain = document.querySelector('.map__pin--main');
-
-  let mainPinLeft = getComputedStyle(mapPinMain).left;
-  let mainPinTop = getComputedStyle(mapPinMain).top;
 
   let addressDefaultCoords = {
     left: parseInt(mainPinLeft, 10),
@@ -71,7 +38,7 @@
     window.form.form.classList.remove('ad-form--disabled');
     window.form.setDisableState();
     window.form.setAddress(addressDefaultCoords.left, addressDefaultCoords.offsetY);
-    window.backend.load(renderPins, errorHandler);
+    window.backend.load(window.pin.render, errorHandler);
     mapPinMain.removeEventListener('mousedown', onMainPinActivate);
   };
 
@@ -83,7 +50,7 @@
 
   const onMainPinMouseDown = function (evt) {
     evt.preventDefault();
-
+    activateFields();
     let startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -121,9 +88,4 @@
 
   mapPinMain.addEventListener('keydown', onMainPinEnterPress);
 
-  window.map = {
-    renderPins: renderPins
-  };
 })();
-
-

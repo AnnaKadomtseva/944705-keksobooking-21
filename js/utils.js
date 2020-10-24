@@ -3,6 +3,7 @@
 (function () {
   const Keys = {
     ENTER: 'Enter',
+    ESC: 'Escape',
     LEFT_MOUSE_BUTTON: 0
   };
 
@@ -18,8 +19,15 @@
     }
   };
 
+  const isEscEvent = function (evt, action) {
+    if (evt.key === Keys.ESC) {
+      action();
+    }
+  };
+
   window.utils = {
     isEnterEvent: isEnterEvent,
-    isMouseButtonEvent: isMouseButtonEvent
+    isMouseButtonEvent: isMouseButtonEvent,
+    isEscEvent: isEscEvent
   };
 })();
