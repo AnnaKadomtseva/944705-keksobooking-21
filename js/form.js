@@ -5,14 +5,32 @@
     MIN: 30,
     MAX: 100
   };
+
   const numberOfGuests = {
     1: ['1'],
     2: ['1', '2'],
     3: ['1', '2', '3'],
     100: ['0']
   };
+
+  const BuildingMinPrice = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
   const form = document.querySelector('.ad-form');
   const formElements = form.querySelectorAll('fieldset, select');
+  const address = form.querySelector('#address');
+  const title = document.querySelector('#title');
+  const guestsNumber = document.querySelector('#capacity');
+  const roomsNumber = document.querySelector('#room_number');
+  const capacityOptions = guestsNumber.querySelectorAll('option');
+  const timein = form.querySelector('#timein');
+  const timeout = form.querySelector('#timeout');
+  const type = form.querySelector('#type');
+  const price = form.querySelector('#price');
 
   const setDisableState = function () {
     formElements.forEach(function (item) {
@@ -22,13 +40,9 @@
 
   setDisableState();
 
-  const address = form.querySelector('#address');
-
   let setAddress = function (x, y) {
     address.value = x + ', ' + y;
   };
-
-  const title = document.querySelector('#title');
 
   title.addEventListener('input', function () {
     const valueLength = title.value.length;
@@ -55,10 +69,6 @@
     }
   });
 
-  const guestsNumber = document.querySelector('#capacity');
-  const roomsNumber = document.querySelector('#room_number');
-  const capacityOptions = guestsNumber.querySelectorAll('option');
-
   const validateRooms = function () {
     const roomValue = roomsNumber.value;
     capacityOptions.forEach(function (option) {
@@ -82,8 +92,30 @@
     evt.preventDefault();
   });
 
+  const onTypeInputChange = function (evt) {
+    const minPrice = BuildingMinPrice[evt.target.value.toUpperCase()];
+    price.min = minPrice;
+    price.placeholder = minPrice;
+  };
+
+  type.addEventListener('change', onTypeInputChange);
+
+  timein.addEventListener('change', function () {
+    timeout.value = timein.value;
+  });
+
+  timeout.addEventListener('change', function () {
+    timein.value = timeout.value;
+  });
+
+  const activateForm = function () {
+    form.classList.remove('ad-form--disabled');
+    setDisableState();
+  };
+
   window.form = {
-    form: form,
+    formElement: form,
+    activateForm: activateForm,
     setDisableState: setDisableState,
     setAddress: setAddress
   };
