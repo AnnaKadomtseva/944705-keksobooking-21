@@ -108,8 +108,14 @@
     timein.value = timeout.value;
   });
 
+  const activateForm = function () {
+    form.classList.remove('ad-form--disabled');
+    setDisableState();
+  };
+
   window.form = {
-    form: form,
+    formElement: form,
+    activateForm: activateForm,
     setDisableState: setDisableState,
     setAddress: setAddress
   };

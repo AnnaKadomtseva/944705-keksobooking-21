@@ -23,8 +23,6 @@
     document.main.insertAdjacentElement('afterbegin', error);
   };
 
-  window.card.mapElement.classList.add('map--faded');
-
   let addressDefaultCoords = {
     left: parseInt(mainPinLeft, 10),
     top: parseInt(mainPinTop, 10),
@@ -35,8 +33,7 @@
 
   const activateFields = function () {
     window.card.mapElement.classList.remove('map--faded');
-    window.form.form.classList.remove('ad-form--disabled');
-    window.form.setDisableState();
+    window.form.activateForm();
     window.form.setAddress(addressDefaultCoords.left, addressDefaultCoords.offsetY);
     window.backend.load(window.pin.render, errorHandler);
     mapPinMain.removeEventListener('mousedown', onMainPinActivate);
@@ -50,7 +47,7 @@
 
   const onMainPinMouseDown = function (evt) {
     evt.preventDefault();
-    activateFields();
+
     let startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -58,6 +55,7 @@
 
     const onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
+
       let shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -72,6 +70,7 @@
 
     const onMouseUp = function (upEvt) {
       upEvt.preventDefault();
+
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -80,12 +79,11 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  mapPinMain.addEventListener('mousedown', onMainPinMouseDown);
-
   const onMainPinEnterPress = function (evt) {
     window.utils.isEnterEvent(evt, activateFields);
   };
 
+  mapPinMain.addEventListener('mousedown', onMainPinMouseDown);
   mapPinMain.addEventListener('keydown', onMainPinEnterPress);
 
 })();

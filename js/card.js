@@ -10,7 +10,7 @@
 
   const map = document.querySelector('.map');
   const card = document.querySelector('#card');
-  const mapCard = card.content.querySelector('.map__card');
+  const cardTemplate = card.content.querySelector('.map__card');
   const mapFiltersContainer = document.querySelector('.map__filters-container');
 
   const renderAdFeatures = function (dataFeatures, featuresNode) {
@@ -43,10 +43,10 @@
   };
 
   const createCard = function (advert) {
-    const renderedCard = mapCard.cloneNode(true);
+    const renderedCard = cardTemplate.cloneNode(true);
 
     const cardAvatar = renderedCard.querySelector('.popup__avatar');
-    if (advert.offer.avatar) {
+    if (advert.author.avatar) {
       cardAvatar.src = advert.author.avatar;
     } else {
       cardAvatar.remove();
@@ -130,6 +130,7 @@
     const onCardCloseClick = function () {
       closeCard();
     };
+
     const closeAdvertButton = renderedCard.querySelector('.popup__close');
     closeAdvertButton.addEventListener('click', onCardCloseClick);
     document.addEventListener('keydown', onCardEscPress);
@@ -138,6 +139,7 @@
   };
 
   const removeCard = function () {
+    const mapCard = map.querySelector('.map__card');
     if (mapCard) {
       mapCard.remove();
     }

@@ -11,8 +11,6 @@
   const pin = document.querySelector('#pin');
   const mapPin = pin.content.querySelector('.map__pin');
   const mapPins = document.querySelector('.map__pins');
-  const mapActivePin = document.querySelector('.map__pin--active');
-  const mapPinItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
   const makeElement = function (advert) {
     let pinElement = mapPin.cloneNode(true);
@@ -50,12 +48,14 @@
   };
 
   const removePin = function () {
+    const mapPinItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     mapPinItems.forEach(function (item) {
       item.remove();
     });
   };
 
   const deactivatePin = function () {
+    const mapActivePin = document.querySelector('.map__pin--active');
     if (mapActivePin) {
       mapActivePin.classList.remove('map__pin--active');
     }

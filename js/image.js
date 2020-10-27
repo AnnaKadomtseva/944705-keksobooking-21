@@ -2,7 +2,7 @@
 
 (function () {
   const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  let photos = [];
+  const HEADER_PREVIEW = 'img/muffin-grey.svg';
 
   const PhotoOptions = {
     WIDTH: '70px',
@@ -10,55 +10,67 @@
     BORDER_RADIUS: '5px'
   };
 
+  const avatarChooser = document.querySelector('.ad-form__field input[type=file]');
   const avatarPreview = document.querySelector('.ad-form-header__preview img');
-  const avatarChooser = document.querySelector('#avatar');
+  const photoChooser = document.querySelector('.ad-form__upload input[type=file]');
   const photoPreview = document.querySelector('.ad-form__photo');
-  const photoChooser = document.querySelector('#images');
 
-  const loadAvatar = function () {
-    const file = avatarChooser.files[0];
-    const fileName = file.name.toLowerCase();
-    const matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
-      const reader = new FileReader();
-      reader.addEventListener('load', function () {
-        avatarPreview.src = reader.result;
-      });
-
-      reader.readAsDataURL(file);
-    }
+  const changeUserPhoto = function (result) {
+    avatarPreview.src = result;
   };
 
-  avatarChooser.addEventListener('change', loadAvatar);
+  const changeTypePhoto = function (result) {
+    const photo = document.createElement('img');
+    photo.src = result;
+    photo.width = PhotoOptions.WIDTH;
+    photo.height = PhotoOptions.HEIGHT;
+    photo.style.borderRadius = PhotoOptions.BORDER_RADIUS + 'px';
+    photoPreview.appendChild(photo);
+  };
 
-  const loadPhoto = function () {
-    Array.from(photoChooser.files).forEach(function (file) {
+  const loadImage = function (element, action) {
+    const file = element.files[0];
+
+    if (file) {
       const fileName = file.name.toLowerCase();
 
-      const matches = FILE_TYPES.some(function (it) {
-        return fileName.endsWith(it);
+      const selectFileType = FILE_TYPES.some(function (item) {
+        return fileName.endsWith(item);
       });
 
-      if (matches) {
+      if (selectFileType) {
         const reader = new FileReader();
 
-        reader.addEventListener('load', function () {
-          const photo = document.createElement('img');
-          photo.style.height = PhotoOptions.HEIGHT;
-          photo.style.width = PhotoOptions.WIDTH;
-          photo.style.borderRadius = PhotoOptions.BORDER_RADIUS;
-          photo.src = reader.result;
-          photoPreview.appendChild(photo);
-          photos.push(photo);
+        reader.addEventListener('load', function (evt) {
+          action(evt.target.result);
         });
 
         reader.readAsDataURL(file);
       }
-    });
+    }
   };
 
-  photoChooser.addEventListener('change', loadPhoto);
+  const onUserPhotoChange = function () {
+    loadImage(avatarChooser, changeUserPhoto);
+  };
+  const onTypePhotoChange = function () {
+    loadImage(photoChooser, changeTypePhoto);
+  };
+
+  avatarChooser.addEventListener('change', onUserPhotoChange);
+  photoChooser.addEventListener('change', onTypePhotoChange);
+
+  const removeImage = function () {
+    avatarPreview.src = HEADER_PREVIEW;
+    const typePhotos = photoPreview.querySelectorAll('img');
+    if (typePhotos) {
+      typePhotos.forEach(function (item) {
+        item.remove();
+      });
+    }
+  };
+
+  window.image = {
+    remove: removeImage
+  };
 })();
