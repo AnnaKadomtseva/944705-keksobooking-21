@@ -22,7 +22,6 @@
 
   const form = document.querySelector('.ad-form');
   const formElements = form.querySelectorAll('fieldset, select');
-  const address = form.querySelector('#address');
   const title = document.querySelector('#title');
   const guestsNumber = document.querySelector('#capacity');
   const roomsNumber = document.querySelector('#room_number');
@@ -39,10 +38,6 @@
   };
 
   setDisableState();
-
-  let setAddress = function (x, y) {
-    address.value = x + ', ' + y;
-  };
 
   title.addEventListener('input', function () {
     const valueLength = title.value.length;
@@ -116,7 +111,6 @@
   window.form = {
     formElement: form,
     activateForm: activateForm,
-    setDisableState: setDisableState,
-    setAddress: setAddress
+    setDisableState: setDisableState
   };
 })();
