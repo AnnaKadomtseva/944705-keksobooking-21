@@ -120,4 +120,14 @@
 
   mapPinMain.addEventListener('mousedown', onMainPinMouseDown);
   mapPinMain.addEventListener('keydown', onMainPinEnterPress);
+
+  const getPinPrimaryPosition = function () {
+    setDefaultCoordinates();
+    mapPinMain.style.left = DefaultMainPin.X + 'px';
+    mapPinMain.style.top = DefaultMainPin.Y + 'px';
+  };
+
+  window.map = {
+    getPinPrimaryPosition: getPinPrimaryPosition
+  };
 })();

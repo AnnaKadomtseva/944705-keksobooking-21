@@ -80,13 +80,6 @@
     validateRooms();
   });
 
-  form.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(form), function () {
-      setDisableState();
-    });
-    evt.preventDefault();
-  });
-
   const onTypeInputChange = function (evt) {
     const minPrice = BuildingMinPrice[evt.target.value.toUpperCase()];
     price.min = minPrice;
@@ -108,9 +101,16 @@
     setDisableState();
   };
 
+  const deactivateForm = function () {
+    setDisableState();
+    form.classList.add('ad-form--disabled');
+    form.reset();
+  };
+
   window.form = {
     formElement: form,
     activateForm: activateForm,
+    deactivate: deactivateForm,
     setDisableState: setDisableState
   };
 })();
