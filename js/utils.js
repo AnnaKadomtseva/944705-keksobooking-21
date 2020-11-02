@@ -26,8 +26,8 @@
   };
 
   window.utils = {
-    isEnterEvent: isEnterEvent,
-    isMouseButtonEvent: isMouseButtonEvent,
-    isEscEvent: isEscEvent
+    pressEnter: isEnterEvent,
+    pressMouseButton: isMouseButtonEvent,
+    pressEsc: isEscEvent
   };
 })();

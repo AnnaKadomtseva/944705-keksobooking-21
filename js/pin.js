@@ -28,7 +28,7 @@
     };
 
     const onPinItemEnterPress = function (evt) {
-      window.utils.isEnterEvent(evt, onPinItemClick);
+      window.utils.pressEnter(evt, onPinItemClick);
     };
 
     pinElement.addEventListener('click', onPinItemClick);

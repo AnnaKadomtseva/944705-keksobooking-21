@@ -1,19 +1,26 @@
 'use strict';
 
 (function () {
+  const ERROR_BORDER = '3px solid red';
+
   const TitleLength = {
     MIN: 30,
     MAX: 100
   };
 
-  const numberOfGuests = {
+  const PriceLength = {
+    MIN: 0,
+    MAX: 1000000
+  };
+
+  const NumberOfGuests = {
     1: ['1'],
     2: ['1', '2'],
     3: ['1', '2', '3'],
     100: ['0']
   };
 
-  const BuildingMinPrice = {
+  const BuildingMinPrices = {
     BUNGALO: 0,
     FLAT: 1000,
     HOUSE: 5000,
@@ -22,9 +29,9 @@
 
   const form = document.querySelector('.ad-form');
   const formElements = form.querySelectorAll('fieldset, select');
-  const title = document.querySelector('#title');
-  const guestsNumber = document.querySelector('#capacity');
-  const roomsNumber = document.querySelector('#room_number');
+  const title = form.querySelector('#title');
+  const guestsNumber = form.querySelector('#capacity');
+  const roomsNumber = form.querySelector('#room_number');
   const capacityOptions = guestsNumber.querySelectorAll('option');
   const timein = form.querySelector('#timein');
   const timeout = form.querySelector('#timeout');
@@ -39,14 +46,21 @@
 
   setDisableState();
 
+  form.addEventListener('invalid', function (evt) {
+    evt.target.style.outline = ERROR_BORDER;
+  }, true);
+
   title.addEventListener('input', function () {
     const valueLength = title.value.length;
     if (valueLength < TitleLength.MIN) {
       title.setCustomValidity('Ещё ' + (TitleLength.MIN - valueLength) + ' симв.');
+      title.style.outline = ERROR_BORDER;
     } else if (valueLength > TitleLength.MAX) {
       title.setCustomValidity('Удалите лишние ' + (valueLength - TitleLength.MAX) + ' симв.');
+      title.style.outline = ERROR_BORDER;
     } else {
       title.setCustomValidity('');
+      title.style.outline = '';
     }
 
     title.reportValidity();
@@ -56,7 +70,7 @@
     if (title.validity.tooShort) {
       title.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
     } else if (title.validity.tooLong) {
-      title.setCustomValidity('Заголовок не должен превышать 100 симолов');
+      title.setCustomValidity('Заголовок не должен превышать 100 символов');
     } else if (title.validity.valueMissing) {
       title.setCustomValidity('Обязательное поле');
     } else {
@@ -64,11 +78,27 @@
     }
   });
 
+  price.addEventListener('input', function () {
+    const valueLength = price.value.length;
+    if (valueLength < PriceLength.MIN) {
+      price.setCustomValidity('Цена для данного типа жилья не может быть менее ' + price.min + ' p.');
+      price.style.outline = ERROR_BORDER;
+    } else if (valueLength > PriceLength.MAX) {
+      price.setCustomValidity('Цена не может быть более 1000000 р.');
+      price.style.outline = ERROR_BORDER;
+    } else {
+      price.setCustomValidity('');
+      price.style.outline = '';
+    }
+
+    price.reportValidity();
+  });
+
   const validateRooms = function () {
     const roomValue = roomsNumber.value;
     capacityOptions.forEach(function (option) {
-      option.selected = numberOfGuests[roomValue][0] === option.value;
-      let isShow = !(numberOfGuests[roomValue].indexOf(option.value) >= 0);
+      option.selected = NumberOfGuests[roomValue][0] === option.value;
+      let isShow = !(NumberOfGuests[roomValue].indexOf(option.value) >= 0);
       option.disabled = isShow;
       option.hidden = isShow;
     });
@@ -80,15 +110,8 @@
     validateRooms();
   });
 
-  form.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(form), function () {
-      setDisableState();
-    });
-    evt.preventDefault();
-  });
-
   const onTypeInputChange = function (evt) {
-    const minPrice = BuildingMinPrice[evt.target.value.toUpperCase()];
+    const minPrice = BuildingMinPrices[evt.target.value.toUpperCase()];
     price.min = minPrice;
     price.placeholder = minPrice;
   };
@@ -108,9 +131,16 @@
     setDisableState();
   };
 
+  const deactivateForm = function () {
+    setDisableState();
+    form.classList.add('ad-form--disabled');
+    form.reset();
+  };
+
   window.form = {
     formElement: form,
-    activateForm: activateForm,
+    activate: activateForm,
+    deactivate: deactivateForm,
     setDisableState: setDisableState
   };
 })();
