@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
-  const MainPinSize = {
-    WIDTH: 65,
-    HEIGHT: 65,
-    ARROW: 22
-  };
+  const MAIN_PIN_HEIGHT = 65;
+  const ARROW_HEIGHT = 22;
 
-  const PIN_SIZE_WIDTH_ARROW = MainPinSize.HEIGHT + MainPinSize.ARROW;
+  const PinSizes = {
+    PIN_SIZE_WIDTH_ARROW: MAIN_PIN_HEIGHT + ARROW_HEIGHT,
+    WIDTH: 65
+  };
 
   const DefaultMainPin = {
     X: 600,
@@ -41,9 +41,9 @@
   };
 
   const setDefaultCoordinates = function (isActivePage) {
-    const deactivatedX = DefaultMainPin.X + Math.floor(MainPinSize.WIDTH / 2);
-    const deactivatedY = DefaultMainPin.Y + Math.floor(MainPinSize.HEIGHT / 2);
-    const activatedY = DefaultMainPin.Y + PIN_SIZE_WIDTH_ARROW;
+    const deactivatedX = DefaultMainPin.X + Math.floor(PinSizes.WIDTH / 2);
+    const deactivatedY = DefaultMainPin.Y + Math.floor(MAIN_PIN_HEIGHT / 2);
+    const activatedY = DefaultMainPin.Y + PinSizes.PIN_SIZE_WIDTH_ARROW;
 
     if (isActivePage) {
       setAddress(deactivatedX, activatedY);
@@ -55,8 +55,8 @@
   setDefaultCoordinates();
 
   const setActualCoordinates = function () {
-    const changedX = parseInt(mapPinMain.style.left, 10) + Math.floor(MainPinSize.WIDTH / 2);
-    const changedY = parseInt(mapPinMain.style.top, 10) + PIN_SIZE_WIDTH_ARROW;
+    const changedX = parseInt(mapPinMain.style.left, 10) + Math.floor(PinSizes.WIDTH / 2);
+    const changedY = parseInt(mapPinMain.style.top, 10) + PinSizes.PIN_SIZE_WIDTH_ARROW;
 
     setAddress(changedX, changedY);
   };
@@ -64,13 +64,13 @@
   const activateFields = function () {
     window.card.mapElement.classList.remove('map--faded');
     window.backend.load(window.pin.render, errorHandler);
-    window.form.activateForm();
+    window.form.activate();
     setDefaultCoordinates(true);
   };
 
   const onMainPinMouseDown = function (evt) {
     evt.preventDefault();
-    window.utils.isMouseButtonEvent(evt, activateFields);
+    window.utils.pressMouseButton(evt, activateFields);
 
     let startCoords = {
       x: evt.clientX - mapPinMain.getBoundingClientRect().left,
@@ -85,16 +85,16 @@
         y: moveEvt.clientY - startCoords.y - window.card.mapElement.getBoundingClientRect().top
       };
 
-      if (shift.y < IntervalCoordinates.Y_MIN - PIN_SIZE_WIDTH_ARROW) {
-        shift.y = IntervalCoordinates.Y_MIN - PIN_SIZE_WIDTH_ARROW;
-      } else if (shift.y > IntervalCoordinates.Y_MAX - PIN_SIZE_WIDTH_ARROW) {
-        shift.y = IntervalCoordinates.Y_MAX - PIN_SIZE_WIDTH_ARROW;
+      if (shift.y < IntervalCoordinates.Y_MIN - PinSizes.PIN_SIZE_WIDTH_ARROW) {
+        shift.y = IntervalCoordinates.Y_MIN - PinSizes.PIN_SIZE_WIDTH_ARROW;
+      } else if (shift.y > IntervalCoordinates.Y_MAX - PinSizes.PIN_SIZE_WIDTH_ARROW) {
+        shift.y = IntervalCoordinates.Y_MAX - PinSizes.PIN_SIZE_WIDTH_ARROW;
       }
 
-      if (shift.x < IntervalCoordinates.X_MIN + Math.floor(MainPinSize.WIDTH / 2)) {
-        shift.x = IntervalCoordinates.X_MIN - Math.floor(MainPinSize.WIDTH / 2);
-      } else if (shift.x > IntervalCoordinates.X_MAX - Math.floor(MainPinSize.WIDTH / 2)) {
-        shift.x = IntervalCoordinates.X_MAX - Math.floor(MainPinSize.WIDTH / 2);
+      if (shift.x < IntervalCoordinates.X_MIN + Math.floor(PinSizes.WIDTH / 2)) {
+        shift.x = IntervalCoordinates.X_MIN - Math.floor(PinSizes.WIDTH / 2);
+      } else if (shift.x > IntervalCoordinates.X_MAX - Math.floor(PinSizes.WIDTH / 2)) {
+        shift.x = IntervalCoordinates.X_MAX - Math.floor(PinSizes.WIDTH / 2);
       }
 
       mapPinMain.style.left = shift.x + 'px';
@@ -115,7 +115,7 @@
   };
 
   const onMainPinEnterPress = function (evt) {
-    window.utils.isEnterEvent(evt, activateFields);
+    window.utils.pressEnter(evt, activateFields);
   };
 
   mapPinMain.addEventListener('mousedown', onMainPinMouseDown);
@@ -128,6 +128,6 @@
   };
 
   window.map = {
-    getPinPrimaryPosition: getPinPrimaryPosition
+    getPosition: getPinPrimaryPosition
   };
 })();

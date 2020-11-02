@@ -118,7 +118,7 @@
     mapFiltersContainer.insertAdjacentElement('beforebegin', renderedCard);
 
     const onCardEscPress = function (evt) {
-      window.utils.isEscEvent(evt, closeCard);
+      window.utils.pressEsc(evt, closeCard);
     };
 
     const closeCard = function () {

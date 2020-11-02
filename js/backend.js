@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  const TIMEOUT_IN_MS = 10000;
+
   const Url = {
     LOAD: 'https://21.javascript.pages.academy/keksobooking/data',
     UPLOAD: 'https://21.javascript.pages.academy/keksobooking'
@@ -9,8 +11,6 @@
   const StatusCode = {
     OK: 200
   };
-
-  const TIMEOUT_IN_MS = 10000;
 
   const createXhr = function (method, url, onSuccess, onError) {
     const xhr = new XMLHttpRequest();

@@ -17,7 +17,7 @@
   };
 
   const onErrorEscPress = function (evt) {
-    window.utils.isEscEvent(evt, closeError);
+    window.utils.pressEsc(evt, closeError);
   };
 
   const onError = function () {
@@ -39,7 +39,7 @@
   };
 
   const onSuccessEscPress = function (evt) {
-    window.util.pressEsc(evt, closeSuccess);
+    window.utils.pressEsc(evt, closeSuccess);
   };
 
   const onSuccess = function () {
@@ -53,7 +53,7 @@
     window.form.deactivate();
     window.pin.remove();
     window.card.remove();
-    window.map.getPinPrimaryPosition();
+    window.map.getPosition();
     window.image.remove();
   };
 
