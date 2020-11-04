@@ -53,6 +53,7 @@
     window.form.deactivate();
     window.pin.remove();
     window.card.remove();
+    window.filter.deactivate();
     window.map.getPosition();
     window.image.remove();
   };

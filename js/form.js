@@ -141,6 +141,6 @@
     formElement: form,
     activate: activateForm,
     deactivate: deactivateForm,
-    setDisableState: setDisableState
+    setDisable: setDisableState
   };
 })();
