@@ -21,10 +21,12 @@
     Y_MAX: 630
   };
 
+  let offers = [];
+
   const mapPinMain = document.querySelector('.map__pin--main');
   const address = document.querySelector('#address');
 
-  let setAddress = function (x, y) {
+  const setAddress = function (x, y) {
     address.value = x + ', ' + y;
   };
 
@@ -61,9 +63,19 @@
     setAddress(changedX, changedY);
   };
 
+  const successHandler = function (data) {
+    data.forEach(function (item) {
+      if (item.offer) {
+        offers.push(item);
+      }
+    });
+
+    window.pin.render(offers.slice(0, window.filter.PINS_MAX));
+  };
+
   const activateFields = function () {
     window.card.mapElement.classList.remove('map--faded');
-    window.backend.load(window.pin.render, errorHandler);
+    window.backend.load(successHandler, errorHandler);
     window.form.activate();
     setDefaultCoordinates(true);
   };
@@ -128,6 +140,9 @@
   };
 
   window.map = {
+    offers: function () {
+      return offers;
+    },
     getPosition: getPinPrimaryPosition
   };
 })();

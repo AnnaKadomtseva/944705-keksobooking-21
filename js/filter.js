@@ -46,7 +46,11 @@
   const filterData = function (data) {
     let adverts = [];
     let result;
-    for (let i = 0; i < data.length && adverts.length < PINS_MAX; i++) {
+    for (let i = 0; i < data.length; i++) {
+      if (adverts.length === PINS_MAX) {
+        break;
+      }
+
       result = filterElements.every(function (filter) {
         return (filter.value === 'any') ? true : filterRules[filter.id](data[i], filter);
       });
@@ -64,14 +68,15 @@
   deactivateFilters();
 
   const onFilterChange = window.debounce(function () {
-    filterData();
     window.pin.remove();
     window.card.remove();
+    window.pin.render(filterData(window.map.offers()));
   });
 
-  filters.addEventListener('change', onFilterChange);
-
   window.filter = {
+    PINS_MAX,
+    form: filters,
+    onFilterChange,
     deactivate: deactivateFilters
   };
 })();
