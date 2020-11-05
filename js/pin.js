@@ -48,7 +48,7 @@
   };
 
   const removePin = function () {
-    const mapPinItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    const mapPinItems = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
     mapPinItems.forEach(function (item) {
       item.remove();
     });

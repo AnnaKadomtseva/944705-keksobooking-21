@@ -28,7 +28,7 @@
   };
 
   const form = document.querySelector('.ad-form');
-  const formElements = form.querySelectorAll('fieldset, select');
+  const formElements = document.querySelectorAll('fieldset, select');
   const title = form.querySelector('#title');
   const guestsNumber = form.querySelector('#capacity');
   const roomsNumber = form.querySelector('#room_number');
@@ -129,18 +129,20 @@
   const activateForm = function () {
     form.classList.remove('ad-form--disabled');
     setDisableState();
+    window.filter.form.addEventListener('change', window.filter.onFilterChange);
   };
 
   const deactivateForm = function () {
     setDisableState();
     form.classList.add('ad-form--disabled');
     form.reset();
+    window.filter.form.removeEventListener('change', window.filter.onFilterChange);
   };
 
   window.form = {
     formElement: form,
     activate: activateForm,
     deactivate: deactivateForm,
-    setDisableState: setDisableState
+    setDisable: setDisableState
   };
 })();
