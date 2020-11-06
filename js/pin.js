@@ -54,7 +54,7 @@ const removePin = () => {
 };
 
 const deactivatePin = () => {
-  const mapActivePin = document.querySelector(`.map__pin--active`);
+  const mapActivePin = mapPins.querySelector(`.map__pin--active`);
   if (mapActivePin) {
     mapActivePin.classList.remove(`map__pin--active`);
   }
