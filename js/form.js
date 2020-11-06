@@ -1,148 +1,178 @@
 'use strict';
 
-(function () {
-  const ERROR_BORDER = '3px solid red';
+const WITH_BORDER = `3px solid red`;
+const WITHOUT_BORDER = ``;
 
-  const TitleLength = {
-    MIN: 30,
-    MAX: 100
-  };
+const TitleLength = {
+  MIN: 30,
+  MAX: 100
+};
 
-  const PriceLength = {
-    MIN: 0,
-    MAX: 1000000
-  };
+const PriceLength = {
+  MIN: 0,
+  MAX: 1000000
+};
 
-  const NumberOfGuests = {
-    1: ['1'],
-    2: ['1', '2'],
-    3: ['1', '2', '3'],
-    100: ['0']
-  };
+const NumberOfGuests = {
+  1: [`1`],
+  2: [`1`, `2`],
+  3: [`1`, `2`, `3`],
+  100: [`0`]
+};
 
-  const BuildingMinPrices = {
-    BUNGALO: 0,
-    FLAT: 1000,
-    HOUSE: 5000,
-    PALACE: 10000
-  };
+const BuildingMinPrices = {
+  BUNGALO: 0,
+  FLAT: 1000,
+  HOUSE: 5000,
+  PALACE: 10000
+};
 
-  const form = document.querySelector('.ad-form');
-  const formElements = document.querySelectorAll('fieldset, select');
-  const title = form.querySelector('#title');
-  const guestsNumber = form.querySelector('#capacity');
-  const roomsNumber = form.querySelector('#room_number');
-  const capacityOptions = guestsNumber.querySelectorAll('option');
-  const timein = form.querySelector('#timein');
-  const timeout = form.querySelector('#timeout');
-  const type = form.querySelector('#type');
-  const price = form.querySelector('#price');
+const form = document.querySelector(`.ad-form`);
+const formElements = document.querySelectorAll(`fieldset, select`);
+const title = form.querySelector(`#title`);
+const guestsNumber = form.querySelector(`#capacity`);
+const roomsNumber = form.querySelector(`#room_number`);
+const capacityOptions = guestsNumber.querySelectorAll(`option`);
+const timein = form.querySelector(`#timein`);
+const timeout = form.querySelector(`#timeout`);
+const type = form.querySelector(`#type`);
+const price = form.querySelector(`#price`);
 
-  const setDisableState = function () {
-    formElements.forEach(function (item) {
-      item.disabled = !item.disabled;
-    });
-  };
+const changeBorderStyle = (element, border) => {
+  element.style.border = border;
+};
 
-  setDisableState();
+const onFormInvalid = (evt) => {
+  changeBorderStyle(evt.target, WITH_BORDER);
+};
 
-  form.addEventListener('invalid', function (evt) {
-    evt.target.style.outline = ERROR_BORDER;
-  }, true);
+form.addEventListener(`invalid`, onFormInvalid, true);
 
-  title.addEventListener('input', function () {
-    const valueLength = title.value.length;
-    if (valueLength < TitleLength.MIN) {
-      title.setCustomValidity('Ещё ' + (TitleLength.MIN - valueLength) + ' симв.');
-      title.style.outline = ERROR_BORDER;
-    } else if (valueLength > TitleLength.MAX) {
-      title.setCustomValidity('Удалите лишние ' + (valueLength - TitleLength.MAX) + ' симв.');
-      title.style.outline = ERROR_BORDER;
-    } else {
-      title.setCustomValidity('');
-      title.style.outline = '';
-    }
+const removeBorder = (element) => {
+  if (element.checkValidity()) {
+    changeBorderStyle(element, WITHOUT_BORDER);
+  }
+};
 
-    title.reportValidity();
+const onTitleChange = () => {
+  removeBorder(title);
+};
+
+title.addEventListener(`change`, onTitleChange);
+
+const removeBorders = () => {
+  changeBorderStyle(title, WITHOUT_BORDER);
+  changeBorderStyle(price, WITHOUT_BORDER);
+  changeBorderStyle(guestsNumber, WITHOUT_BORDER);
+};
+
+const setDisableState = () => {
+  formElements.forEach((item) => {
+    item.disabled = !item.disabled;
   });
+};
 
-  title.addEventListener('invalid', function () {
-    if (title.validity.tooShort) {
-      title.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
-    } else if (title.validity.tooLong) {
-      title.setCustomValidity('Заголовок не должен превышать 100 символов');
-    } else if (title.validity.valueMissing) {
-      title.setCustomValidity('Обязательное поле');
-    } else {
-      title.setCustomValidity('');
-    }
+setDisableState();
+
+title.addEventListener(`input`, () => {
+  const valueLength = title.value.length;
+  if (valueLength < TitleLength.MIN) {
+    title.setCustomValidity(`Ещё ${TitleLength.MIN - valueLength} симв.`);
+  } else if (valueLength > TitleLength.MAX) {
+    title.setCustomValidity(`Удалите лишние ${valueLength - TitleLength.MAX} симв.`);
+  } else {
+    title.setCustomValidity(``);
+  }
+
+  title.reportValidity();
+});
+
+title.addEventListener(`invalid`, () => {
+  if (title.validity.tooShort) {
+    title.setCustomValidity(`Заголовок должен состоять минимум из 30 символов`);
+  } else if (title.validity.tooLong) {
+    title.setCustomValidity(`Заголовок не должен превышать 100 символов`);
+  } else if (title.validity.valueMissing) {
+    title.setCustomValidity(`Обязательное поле`);
+  } else {
+    title.setCustomValidity(``);
+  }
+});
+
+price.addEventListener(`input`, () => {
+  const valueLength = price.value.length;
+  if (valueLength < PriceLength.MIN) {
+    price.setCustomValidity(`Цена для данного типа жилья не может быть менее ${price.min} p.`);
+  } else if (valueLength > PriceLength.MAX) {
+    price.setCustomValidity(`Цена не может быть более 1000000 р.`);
+  } else {
+    price.setCustomValidity(``);
+  }
+
+  price.reportValidity();
+});
+
+const onPriceChange = () => {
+  removeBorder(price);
+};
+
+price.addEventListener(`change`, onPriceChange);
+
+const validateRooms = () => {
+  const roomValue = roomsNumber.value;
+  capacityOptions.forEach((option) => {
+    option.selected = NumberOfGuests[roomValue][0] === option.value;
+    let isShow = !(NumberOfGuests[roomValue].indexOf(option.value) >= 0);
+    option.disabled = isShow;
+    option.hidden = isShow;
   });
+};
 
-  price.addEventListener('input', function () {
-    const valueLength = price.value.length;
-    if (valueLength < PriceLength.MIN) {
-      price.setCustomValidity('Цена для данного типа жилья не может быть менее ' + price.min + ' p.');
-      price.style.outline = ERROR_BORDER;
-    } else if (valueLength > PriceLength.MAX) {
-      price.setCustomValidity('Цена не может быть более 1000000 р.');
-      price.style.outline = ERROR_BORDER;
-    } else {
-      price.setCustomValidity('');
-      price.style.outline = '';
-    }
+validateRooms();
 
-    price.reportValidity();
-  });
-
-  const validateRooms = function () {
-    const roomValue = roomsNumber.value;
-    capacityOptions.forEach(function (option) {
-      option.selected = NumberOfGuests[roomValue][0] === option.value;
-      let isShow = !(NumberOfGuests[roomValue].indexOf(option.value) >= 0);
-      option.disabled = isShow;
-      option.hidden = isShow;
-    });
-  };
-
+roomsNumber.addEventListener(`change`, () => {
   validateRooms();
+});
 
-  roomsNumber.addEventListener('change', function () {
-    validateRooms();
-  });
+const onCapacityChange = () => {
+  removeBorder(guestsNumber);
+};
 
-  const onTypeInputChange = function (evt) {
-    const minPrice = BuildingMinPrices[evt.target.value.toUpperCase()];
-    price.min = minPrice;
-    price.placeholder = minPrice;
-  };
+guestsNumber.addEventListener(`change`, onCapacityChange);
 
-  type.addEventListener('change', onTypeInputChange);
+const onTypeInputChange = (evt) => {
+  const minPrice = BuildingMinPrices[evt.target.value.toUpperCase()];
+  price.min = minPrice;
+  price.placeholder = minPrice;
+};
 
-  timein.addEventListener('change', function () {
-    timeout.value = timein.value;
-  });
+type.addEventListener(`change`, onTypeInputChange);
 
-  timeout.addEventListener('change', function () {
-    timein.value = timeout.value;
-  });
+timein.addEventListener(`change`, () => {
+  timeout.value = timein.value;
+});
 
-  const activateForm = function () {
-    form.classList.remove('ad-form--disabled');
-    setDisableState();
-    window.filter.form.addEventListener('change', window.filter.onFilterChange);
-  };
+timeout.addEventListener(`change`, () => {
+  timein.value = timeout.value;
+});
 
-  const deactivateForm = function () {
-    setDisableState();
-    form.classList.add('ad-form--disabled');
-    form.reset();
-    window.filter.form.removeEventListener('change', window.filter.onFilterChange);
-  };
+const activateForm = () => {
+  form.classList.remove(`ad-form--disabled`);
+  setDisableState();
+  window.filter.form.addEventListener(`change`, window.filter.onFilterChange);
+};
 
-  window.form = {
-    formElement: form,
-    activate: activateForm,
-    deactivate: deactivateForm,
-    setDisable: setDisableState
-  };
-})();
+const deactivateForm = () => {
+  setDisableState();
+  form.classList.add(`ad-form--disabled`);
+  form.reset();
+  window.filter.form.removeEventListener(`change`, window.filter.onFilterChange);
+  removeBorders();
+};
+
+window.form = {
+  formElement: form,
+  activate: activateForm,
+  deactivate: deactivateForm,
+  setDisable: setDisableState
+};
