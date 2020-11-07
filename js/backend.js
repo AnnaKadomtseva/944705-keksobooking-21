@@ -42,6 +42,6 @@ const load = (onSuccess, onError) => {
 };
 
 window.backend = {
-  upload: upload,
-  load: load
+  upload,
+  load
 };
