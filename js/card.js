@@ -12,17 +12,15 @@ const card = document.querySelector(`#card`);
 const cardTemplate = card.content.querySelector(`.map__card`);
 const mapFiltersContainer = map.querySelector(`.map__filters-container`);
 
-const renderAdFeatures = (dataFeatures, featuresNode) => {
-  const currentFeatures = dataFeatures.offer.features;
-  let featuresArray = [].slice.call(featuresNode.children);
-
-  featuresArray.forEach((item, index) => {
-    if (index >= currentFeatures.length) {
-      featuresNode.removeChild(item);
-    }
-
-    item.textContent = currentFeatures[index];
+const createFeature = (advert) => {
+  const featureFragment = document.createDocumentFragment();
+  advert.offer.features.forEach((item) => {
+    const featureItem = document.createElement(`li`);
+    featureItem.className = `popup__feature popup__feature--` + item;
+    featureFragment.appendChild(featureItem);
   });
+
+  return featureFragment;
 };
 
 const renderAdPhotos = (dataPhoto, photosNode) => {
@@ -74,7 +72,7 @@ const createCard = (advert) => {
 
   const cardType = renderedCard.querySelector(`.popup__type`);
   if (advert.offer.type) {
-    cardType.textContent = TypesHousing[advert.offer.type];
+    cardType.textContent = TypesHousing[advert.offer.type.toUpperCase()];
   } else {
     cardType.remove();
   }
@@ -94,8 +92,9 @@ const createCard = (advert) => {
   }
 
   const cardFeatures = renderedCard.querySelector(`.popup__features`);
-  if (advert.offer.features.length) {
-    renderAdFeatures(advert, cardFeatures);
+  if (advert.offer.features) {
+    cardFeatures.innerHTML = ``;
+    cardFeatures.appendChild(createFeature(advert));
   } else {
     cardFeatures.remove();
   }

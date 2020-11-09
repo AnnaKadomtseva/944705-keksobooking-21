@@ -38,6 +38,14 @@ const timeout = form.querySelector(`#timeout`);
 const type = form.querySelector(`#type`);
 const price = form.querySelector(`#price`);
 
+const setDisableState = () => {
+  formElements.forEach((item) => {
+    item.disabled = !item.disabled;
+  });
+};
+
+setDisableState();
+
 const changeBorderStyle = (element, border) => {
   element.style.border = border;
 };
@@ -65,14 +73,6 @@ const removeBorders = () => {
   changeBorderStyle(price, WITHOUT_BORDER);
   changeBorderStyle(guestsNumber, WITHOUT_BORDER);
 };
-
-const setDisableState = () => {
-  formElements.forEach((item) => {
-    item.disabled = !item.disabled;
-  });
-};
-
-setDisableState();
 
 title.addEventListener(`input`, () => {
   const valueLength = title.value.length;
@@ -173,6 +173,5 @@ const deactivateForm = () => {
 window.form = {
   formElement: form,
   activate: activateForm,
-  deactivate: deactivateForm,
-  setDisable: setDisableState
+  deactivate: deactivateForm
 };

@@ -81,7 +81,9 @@ const activateFields = () => {
 
 const onMainPinMouseDown = (evt) => {
   evt.preventDefault();
-  window.utils.pressMouseButton(evt, activateFields);
+  if (window.card.mapElement.classList.contains(`map--faded`)) {
+    window.utils.pressMouseButton(evt, activateFields);
+  }
 
   let startCoords = {
     x: evt.clientX - mapPinMain.getBoundingClientRect().left,
